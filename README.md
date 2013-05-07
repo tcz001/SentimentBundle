@@ -1,0 +1,4 @@
+SentimentBundle
+===============
+
+SentimentBundle for SNSCrawlerFramework
