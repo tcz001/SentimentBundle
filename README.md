@@ -39,4 +39,4 @@ SentimentBundle for SNSCrawlerFramework
 
 ##TODO
 
-考虑用SVM来优化文本分类，用源数据的词表结果来评估新数据，再用新数据对词表反馈，也就是把Main类与Train合并起来。
+考虑用SVM来优化文本分类，用源数据的词表结果来评估新数据，再用新数据对词表反馈，也就是把Main类与Train合并起来，省去人工特征简约(feature reduce)的过程。
