@@ -13,12 +13,15 @@ import java.io.*;
  */
 public class IKSegmenterTest {
     private static File[] files;
+    private static File dump_file;
     IKSegmenter ikSegmenter;
 
-    public void setUp() {
+    public void setUp() throws IOException {
 //        String s = "由于分词器没有处理歧义分词的能力,才使用了IKQueryParser来解决搜索时的歧义冲突问题";
 //        Reader reader = new StringReader(s);
-        files = new File("/home/tcz/Github/TrainingFrame/resources/rar/NB_del_4000/neg").listFiles();
+        files = new File("/home/tcz/Github/TrainingFrame/resources/rar/NB_del_4000/pos").listFiles();
+        dump_file = new File("/home/tcz/Github/TrainingFrame/resources/rar/NB_del_4000/pos/pos.txt");
+        if(!dump_file.exists())dump_file.createNewFile();
         assert files != null;
     }
 
@@ -26,12 +29,13 @@ public class IKSegmenterTest {
         IKSegmenterTest ikSegmenterTest = new IKSegmenterTest();
         ikSegmenterTest.setUp();
 
+        BufferedReader bufferedReader = null;
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(dump_file));
         for (File fl : files) {
             if (fl.isDirectory())
                 System.out.println(fl.toString());
             else
                 System.out.println(fl.getName());
-            BufferedReader bufferedReader = null;
             try {
                 bufferedReader = new BufferedReader(new FileReader(fl.getAbsoluteFile()));
             } catch (FileNotFoundException e) {
@@ -46,14 +50,17 @@ public class IKSegmenterTest {
                     ikSegmenterTest.ikSegmenter = new IKSegmenter(sr, false);
                     Lexeme lexeme = ikSegmenterTest.ikSegmenter.next();
                     while (lexeme != null) {
-                        System.out.print(lexeme.getLexemeText()+" ");
+                        System.out.print(lexeme.getLexemeText() + " ");
+                        bufferedWriter.write(lexeme.getLexemeText()+" ");
                         lexeme = ikSegmenterTest.ikSegmenter.next();
                     }
                     System.out.println();
+                    bufferedWriter.write("\n");
                 }
                 s = bufferedReader.readLine();
             }
+            bufferedReader.close();
         }
-
+        bufferedWriter.close();
     }
 }

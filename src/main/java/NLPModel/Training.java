@@ -225,13 +225,15 @@ public class Training {
 		List<WordPair> wordPairs = parseToWordPairs(words);
 		int totalSize = words.size() + wordPairs.size();
 		double largeIncrementSize = (value/totalSize)/2d;
-		double smallIncrementSize = largeIncrementSize/objectPoliticsList.size()-1;
+		double smallIncrementSize = largeIncrementSize/(objectPoliticsList.size()-1);
 		for (Word w: words){
 			for (String s: objectPoliticsList){
 				if (s.equals(feature)){
 					w.changePoliticValue(s, largeIncrementSize + w.getPoliticValue(s));
+                    if(master.containsWord(w))master.changeWord(w);
 				} else {
 					w.changePoliticValue(s, w.getPoliticValue(s) - smallIncrementSize);
+                    if(master.containsWord(w))master.changeWord(w);
 				}
 			}
 		}
@@ -240,12 +242,14 @@ public class Training {
 			for (String s: objectPoliticsList){
 				if (s.equals(feature)){
 					wp.changePoliticValue(s, wp.getFullPolitics().get(s) + largeIncrementSize);
+                    if(master.containsWordPair(wp))master.changeWordPair(wp);
 				} else {
 					wp.changePoliticValue(s, wp.getFullPolitics().get(s) - smallIncrementSize);
+                    if(master.containsWordPair(wp))master.changeWordPair(wp);
 				}
 			}
 		}
-		
+
 	}
 	
 	public void trainWordList(WordList master, String feature, String miniCorpus){
@@ -268,8 +272,8 @@ public class Training {
 				double maxValue = Collections.max(values.values());
 				double featureValue = values.get(feature);
 				if (maxValue == featureValue){
-					continue;
-				} else{
+                    massIncrementPolitic(master, feature, list, Math.random());
+                } else{
 					Double difference = maxValue - featureValue;
 					massIncrementPolitic(master, feature, list, difference);
 				}
@@ -279,8 +283,8 @@ public class Training {
 	}
 	
 	public WordList initializeDictionary() throws IOException{
-		String conservativeCorpus = "resources/ConservativeTweets.txt";
-		String liberalCorpus = "resources/LiberalTweets.txt";
+		String conservativeCorpus = "resources/neg.txt";
+		String liberalCorpus = "resources/pos.txt";
 		
 		WordList conservativeWords = parseFileToWordList(conservativeCorpus);
 		WordList liberalWords = parseFileToWordList(liberalCorpus);
@@ -303,7 +307,7 @@ public class Training {
 		String current;
 		while (reader.readLine() != null){
 			current = reader.readLine();
-			trainWordList(master, "conservative", current);
+			trainWordList(master, feature, current);
 		}
 		reader.close();
 	}
