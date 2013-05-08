@@ -260,7 +260,7 @@ public class Training {
 				double maxValue = Collections.max(values.values());
 				double featureValue = values.get(feature);
 				if (maxValue == featureValue){
-					continue;
+                    massIncrementEmotion(master, feature, list, Math.abs(Math.random()));
 				} else{
 					Double difference = maxValue - featureValue;
 					massIncrementEmotion(master, feature, list, difference);
@@ -272,7 +272,7 @@ public class Training {
 				double maxValue = Collections.max(values.values());
 				double featureValue = values.get(feature);
 				if (maxValue == featureValue){
-                    massIncrementPolitic(master, feature, list, Math.random());
+                    massIncrementPolitic(master, feature, list, Math.abs(Math.random()));
                 } else{
 					Double difference = maxValue - featureValue;
 					massIncrementPolitic(master, feature, list, difference);
@@ -310,5 +310,6 @@ public class Training {
 			trainWordList(master, feature, current);
 		}
 		reader.close();
+        master.fileDump("resources/LanguageDump.txt");
 	}
 }

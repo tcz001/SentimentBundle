@@ -1,9 +1,6 @@
 package NLPModel;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -20,21 +17,26 @@ public class Evaluate {
         String conservativeCorpus = "resources/neg.txt";
 //        String liberalCorpus = "resources/postest.txt";
 
-        File conservative = new File(conservativeCorpus);
 //        File liberal = new File(liberalCorpus);
-        BufferedReader conservativeReader = new BufferedReader(new FileReader(conservative.getAbsoluteFile()));
 //        BufferedReader liberalReader = new BufferedReader(new FileReader(liberal.getAbsoluteFile()));
 
-        WordList totalDictionary = dummy.parseFileToData("resources/LanguageDump.txt");
+
+
+        for (int i=0;i<10;i++){
+            WordList totalDictionary = dummy.parseFileToData("resources/LanguageDump.txt");
+            evaluate(conservativeCorpus,dummy,totalDictionary);
+            dummy.trainOnCorpus(conservativeCorpus,"conservative",totalDictionary);
+        }
+    }
+
+    public static void evaluate(String filePath,Training dummy,WordList totalDictionary) throws IOException {
+        File file = new File(filePath);
+        BufferedReader reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
         String current = "Placeholder";
-
-
-
-
         double Total = 0d;
         double Hit = 0d;
         while (current != null){
-            current = conservativeReader.readLine();
+            current = reader.readLine();
             List<List<String>> chunkedCorpus = dummy.cleanCorpus(current);
             for (List<String> s: chunkedCorpus){
                 Map<String, Double> politics = dummy.politicsScore(totalDictionary, s);
@@ -44,34 +46,7 @@ public class Evaluate {
             Total++;
             }
         }
-        conservativeReader.close();
-        System.out.println(Hit/(Total));
-
-
-        for (int i=0;i<20;i++){
-            conservativeReader = new BufferedReader(new FileReader(conservative.getAbsoluteFile()));
-            while (conservativeReader.readLine() != null){
-                current = conservativeReader.readLine();
-                dummy.trainWordList(totalDictionary, "conservative", current);
-            }
-            conservativeReader.close();
-            totalDictionary.fileDump("resources/LanguageDump.txt");
-        }
-
-        Total = 0d;
-        Hit = 0d;
-        while (current != null){
-            current = conservativeReader.readLine();
-            List<List<String>> chunkedCorpus = dummy.cleanCorpus(current);
-            for (List<String> s: chunkedCorpus){
-                Map<String, Double> politics = dummy.politicsScore(totalDictionary, s);
-                if (politics.get("liberal") <= politics.get("conservative")){
-                    Hit++;
-                }
-                Total++;
-            }
-        }
-        conservativeReader.close();
+        reader.close();
         System.out.println(Hit/(Total));
     }
 }

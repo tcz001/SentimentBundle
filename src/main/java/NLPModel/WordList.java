@@ -122,7 +122,11 @@ public class WordList {
     public void changeWord(Word word) {
         for (Word w : this.allWords) {
             if (w.getName().equals(word.getName())) {
-                w = word;
+                int i=this.allWords.indexOf(w);
+//                System.out.println(w.getName());
+//                System.out.println(this.allWords.get(i));
+                this.allWords.set(i,word);
+//                System.out.println(this.allWords.get(i));
             }
         }
     }
@@ -132,7 +136,8 @@ public class WordList {
             for (WordPair wp : this.allWordPairs) {
                 if (wp.getWordOne().equals(wordPair.getWordOne())) {
                     if (wp.getWordTwo().equals(wordPair.getWordTwo())) {
-                        wp = wordPair;
+                        int i=this.allWordPairs.indexOf(wp);
+                        this.allWordPairs.set(i,wordPair);
                     }
                 }
             }
